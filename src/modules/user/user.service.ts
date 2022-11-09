@@ -9,6 +9,7 @@ import { Paystack } from '../../core/utils/Paystack';
 import { Transaction } from './interfaces/transaction.interface';
 import { ConfigService } from '@nestjs/config';
 import { WebhookPayload } from '../../core/utils/interfaces/paystack.interface';
+import { Wallet } from './interfaces/wallet.interface';
 import {
   CREDIT,
   DEPOSIT,
@@ -86,7 +87,7 @@ export class UserService {
       email: user.email,
     });
 
-    const transaction = await this.knex<Transaction>('transactions').insert({
+    await this.knex<Transaction>('transactions').insert({
       amount,
       mode: DEPOSIT,
       type: CREDIT,
@@ -122,15 +123,30 @@ export class UserService {
       if (event.event === 'charge.success') {
         // verify transaction and update wallet
         const session = await this.knex.transaction();
-        session('transactions')
+        session<Transaction>('transactions')
           .where({ reference: event.data.reference })
           .update({ status: SUCCESS })
-          .then((id) => {
-            console.log(id);
+          .then(async () => {
+            const transaction = await this.knex<Transaction>('transactions')
+              .select('*')
+              .where({ reference: event.data.reference })
+              .first();
+            const wallet = await this.knex<Wallet>('wallets')
+              .select('*')
+              .where({
+                id: transaction.wallet_id,
+              })
+              .first();
+            await session<Wallet>('wallets')
+              .where('id', wallet.id)
+              .increment('currentBalance', event.data.amount);
             return null;
           })
           .then(session.commit)
-          .catch(session.rollback);
+          .catch((err) => {
+            console.log(err);
+            return session.rollback;
+          });
       }
     }
   }
