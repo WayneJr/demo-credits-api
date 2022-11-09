@@ -28,6 +28,11 @@ const BANK = 'bank';
 const REMITA = 'remita';
 const NIBSS = 'nibss';
 const PAYSTACK = 'paystack';
+
+// Get Accounts ID types
+const USERID = 'userId';
+const WALLETID = 'walletId';
+
 // Transaction Status
 const PENDING = 'pending';
 const PROCESSING = 'processing';
@@ -57,6 +62,7 @@ const TEST = 'test';
 // Providers
 const USER_SERVICE = 'USER_SERVICE';
 const TRANSACTION_SERVICE = 'TRANSACTION_SERVICE';
+const ACCOUNT_SERVICE = 'ACCOUNT_SERVICE';
 
 export {
   PAYSTACK_HOSTNAME,
@@ -106,4 +112,7 @@ export {
   TEST,
   USER_SERVICE,
   TRANSACTION_SERVICE,
+  ACCOUNT_SERVICE,
+  USERID,
+  WALLETID,
 };

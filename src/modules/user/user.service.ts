@@ -27,7 +27,7 @@ export class UserService {
       .then((id) => {
         return session('wallets')
           .insert({
-            user_id: id[0],
+            userId: id[0],
             tag: user.tag,
           })
           .then((walletId) => {
