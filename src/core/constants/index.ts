@@ -56,7 +56,7 @@ const TEST = 'test';
 
 // Providers
 const USER_SERVICE = 'USER_SERVICE';
-const UTIL_SERVICE = 'UTIL_SERVICE';
+const TRANSACTION_SERVICE = 'TRANSACTION_SERVICE';
 
 export {
   PAYSTACK_HOSTNAME,
@@ -105,5 +105,5 @@ export {
   PROD,
   TEST,
   USER_SERVICE,
-  UTIL_SERVICE,
+  TRANSACTION_SERVICE,
 };
