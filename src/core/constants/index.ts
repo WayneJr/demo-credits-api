@@ -1,7 +1,8 @@
 const PAYSTACK_HOSTNAME = 'api.paystack.co';
 const PAYSTACK_PORT = 443;
 const PAYSTACK_POST_METHOD = 'POST';
-const PAYSTACK_TRANSACTION_PATH = '/transaction/initialize';
+const PAYSTACK_TRANSACTION_PATH = 'transaction/initialize';
+const PAYSTACK_VERIFY_TRANSACTION_PATH = 'transaction/verify';
 const PAYSTACK_NUBAN = 'nuban';
 const PAYSTACK_CURRENCY = 'NGN';
 const PAYSTACK_BALANCE = 'balance';
@@ -12,6 +13,7 @@ const PAYSTACK_FINALIZE = '/transfer/finalize_transfer';
 const PAYSTACK_AUTH = `Bearer ${process.env.PAYSTACK_SECRET}`;
 const PAYSTACK_CONTENT_STRING = 'Content-Type';
 const PAYSTACK_CONTENT_TYPE = 'application/json';
+const PAYSTACK_CALLBACK_URL = process.env.PAYSTACK_CALLBACK_URL;
 const TRANS_TYPE_CARD = 'addCard';
 const TRANS_CARD_AMOUNT = 10000;
 const OK = 200;
@@ -26,15 +28,19 @@ const BANK = 'bank';
 const REMITA = 'remita';
 const NIBSS = 'nibss';
 const PAYSTACK = 'paystack';
-const DEDUKT = 'dedukt';
 // Transaction Status
 const PENDING = 'pending';
 const PROCESSING = 'processing';
 const FAILED = 'failed';
-const SUCCESSFUL = 'successful';
+const SUCCESS = 'success';
 // Transaction Type
 const DEBIT = 'debit';
 const CREDIT = 'credit';
+
+// Transaction mode
+const WALLET = 'wallet';
+const DEPOSIT = 'deposit';
+const WITHDRAW = 'withdraw';
 
 // Http Methods
 const GET = 'get';
@@ -48,11 +54,16 @@ const DEV = 'dev';
 const PROD = 'prod';
 const TEST = 'test';
 
+// Providers
+const USER_SERVICE = 'USER_SERVICE';
+const UTIL_SERVICE = 'UTIL_SERVICE';
+
 export {
   PAYSTACK_HOSTNAME,
   PAYSTACK_PORT,
   PAYSTACK_POST_METHOD,
   PAYSTACK_TRANSACTION_PATH,
+  PAYSTACK_VERIFY_TRANSACTION_PATH,
   PAYSTACK_RECIPIENT,
   PAYSTACK_CURRENCY,
   PAYSTACK_FINALIZE,
@@ -61,6 +72,7 @@ export {
   PAYSTACK_AUTH,
   PAYSTACK_CONTENT_STRING,
   PAYSTACK_CONTENT_TYPE,
+  PAYSTACK_CALLBACK_URL,
   PAYSTACK_TRANSACTION_REFUND_PATH,
   PAYSTACK_TRANSACTION_CHARGE_PATH,
   TRANS_CARD_AMOUNT,
@@ -75,11 +87,13 @@ export {
   REMITA,
   NIBSS,
   PAYSTACK,
-  DEDUKT,
+  DEPOSIT,
+  WITHDRAW,
+  WALLET,
   PENDING,
   PROCESSING,
   FAILED,
-  SUCCESSFUL,
+  SUCCESS,
   CREDIT,
   DEBIT,
   GET,
@@ -90,4 +104,6 @@ export {
   DEV,
   PROD,
   TEST,
+  USER_SERVICE,
+  UTIL_SERVICE,
 };
