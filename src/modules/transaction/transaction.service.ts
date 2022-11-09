@@ -9,12 +9,13 @@ import {
   PROCESSING,
   PAYSTACK_CURRENCY,
   SUCCESS,
-} from 'src/core/constants';
-import { WebhookPayload } from 'src/core/utils/interfaces/paystack.interface';
-import { Paystack } from 'src/core/utils/Paystack';
+} from '../../core/constants';
+import { WebhookPayload } from '../../core/utils/interfaces/paystack.interface';
+import { Paystack } from '../../core/utils/Paystack';
 import { User } from '../user/interfaces/user.interface';
 import { Wallet } from './interfaces/wallet.interface';
 import { Transaction } from './interfaces/transaction.interface';
+import { Account } from '../account/interfaces/account.interface';
 
 @Injectable()
 export class TransactionService {
@@ -34,7 +35,7 @@ export class TransactionService {
   }) {
     const user = await this.knex<User>('users').where({ email }).first();
     const wallet = await this.knex('wallets')
-      .where({ user_id: user.id })
+      .where({ userId: user.id })
       .first();
 
     if (user.transactionPin !== transactionPin) {
@@ -46,14 +47,14 @@ export class TransactionService {
     });
 
     await this.knex<Transaction>('transactions').insert({
-      amount,
+      amount: amount / 100,
       mode: DEPOSIT,
       type: CREDIT,
       status: PROCESSING,
       currency: PAYSTACK_CURRENCY,
       reference: response.data.reference,
-      user_id: user.id,
-      wallet_id: wallet.id,
+      userId: user.id,
+      walletId: wallet.id,
     });
 
     return {
@@ -61,7 +62,7 @@ export class TransactionService {
     };
   }
 
-  async verifyDeposit({
+  async verifyDepositOrWithdrawal({
     body,
     headers,
   }: {
@@ -90,12 +91,39 @@ export class TransactionService {
             const wallet = await this.knex<Wallet>('wallets')
               .select('*')
               .where({
-                id: transaction.wallet_id,
+                id: transaction.walletId,
               })
               .first();
             await session<Wallet>('wallets')
               .where('id', wallet.id)
-              .increment('currentBalance', event.data.amount);
+              .increment('currentBalance', event.data.amount / 100);
+            return null;
+          })
+          .then(session.commit)
+          .catch((err) => {
+            console.log(err);
+            return session.rollback;
+          });
+      } else if (event.event === 'transfer.success') {
+        // verify transaction and update wallet
+        const session = await this.knex.transaction();
+        session<Transaction>('transactions')
+          .where({ reference: event.data.reference })
+          .update({ status: SUCCESS })
+          .then(async () => {
+            const transaction = await this.knex<Transaction>('transactions')
+              .select('*')
+              .where({ reference: event.data.reference })
+              .first();
+            const wallet = await this.knex<Wallet>('wallets')
+              .select('*')
+              .where({
+                id: transaction.walletId,
+              })
+              .first();
+            await session<Wallet>('wallets')
+              .where('id', wallet.id)
+              .decrement('currentBalance', event.data.amount / 100);
             return null;
           })
           .then(session.commit)
@@ -107,7 +135,41 @@ export class TransactionService {
     }
   }
 
-  async getBanks() {
-    return await Paystack.getBanks();
+  async initiateWithdrawal(userId: number, amount: number, accountId: number) {
+    const user = await this.knex<User>('users').where({ id: userId }).first();
+    const wallet = await this.knex<Wallet>('wallets')
+      .where({ userId: user.id })
+      .first();
+
+    let account = await this.knex<Account>('accounts')
+      .where({ id: accountId })
+      .first();
+
+    if (wallet.currentBalance < amount / 100) {
+      throw new ForbiddenException('Insufficient funds');
+    }
+
+    if (!account.recipientCode) {
+      const newRecipient = await Paystack.createRecipient({
+        name: account.accountName,
+        accountNumber: account.accountNumber,
+        bankCode: account.bankCode,
+      });
+      await this.knex<Account>('accounts').where({ id: accountId }).update({
+        recipientCode: newRecipient.data.recipient_code,
+      });
+
+      account = await this.knex<Account>('accounts')
+        .where({ id: accountId })
+        .first();
+      console.log(account);
+    }
+
+    const transfer = Paystack.initiateTransfer({
+      amount,
+      recipient: account.recipientCode,
+    });
+
+    return transfer;
   }
 }

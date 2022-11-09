@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './modules/user/user.module';
 import { TransactionModule } from './modules/transaction/transaction.module';
+import { AccountModule } from './modules/account/account.module';
 import config from './config/config';
 import knexConfig from '../knexfile';
 
@@ -26,6 +27,7 @@ import knexConfig from '../knexfile';
     }),
     UserModule,
     TransactionModule,
+    AccountModule,
   ],
   controllers: [AppController],
   providers: [AppService],

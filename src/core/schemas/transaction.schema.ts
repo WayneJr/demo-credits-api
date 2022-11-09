@@ -19,12 +19,12 @@ const transactionSchema = (table: Knex.CreateTableBuilder) => {
   table.enum('status', [PENDING, PROCESSING, SUCCESS, FAILED]).notNullable();
   table.string('currency').notNullable();
   table.string('reference').notNullable();
-  table.integer('user_id').unsigned().notNullable();
+  table.integer('userId').unsigned().notNullable();
   table.integer('receiver_wallet').unsigned().nullable();
-  table.integer('wallet_id').unsigned().notNullable();
-  table.foreign('user_id').references('id').inTable('users');
+  table.integer('walletId').unsigned().notNullable();
+  table.foreign('userId').references('id').inTable('users');
   table.foreign('receiver_wallet').references('id').inTable('wallets');
-  table.foreign('wallet_id').references('id').inTable('wallets');
+  table.foreign('walletId').references('id').inTable('wallets');
   table.timestamps(true, true);
 };
 

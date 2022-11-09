@@ -3,7 +3,7 @@ export interface Wallet {
   tag: string;
   currentBalance: number;
   previousBalance: number;
-  user_id: number;
+  userId: number;
   readonly created_at: Date;
   readonly updated_at: Date;
 }

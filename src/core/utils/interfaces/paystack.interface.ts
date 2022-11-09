@@ -10,6 +10,32 @@ interface PaystackEvent<T> {
   data: T;
 }
 
+export interface RecipientDetails {
+  authorization_code: any;
+  account_number: string;
+  account_name: any;
+  bank_code: string;
+  bank_name: string;
+}
+
+export interface TransferRecipientData {
+  active: boolean;
+  createdAt: Date;
+  currency: string;
+  domain: string;
+  id: number;
+  integration: number;
+  name: string;
+  recipient_code: string;
+  type: string;
+  updatedAt: string;
+  is_deleted: boolean;
+  details: RecipientDetails;
+}
+
+export interface CreateRecipientResponse
+  extends PaystackResponse<TransferRecipientData> {}
+
 export interface InitializePaymentPayload {
   amount: number;
   email: string;
@@ -18,6 +44,34 @@ export interface InitializePaymentPayload {
   initialCharge?: boolean;
   meta?: Record<string, any>;
 }
+
+export interface ResolveAccountData {
+  account_number: string;
+  account_name: string;
+  bank_id: number;
+}
+
+export interface ResolveAccountResponse
+  extends PaystackResponse<ResolveAccountData> {}
+
+export interface InitiateTransferData {
+  reference: string;
+  integration: number;
+  domain: string;
+  amount: number;
+  currency: string;
+  source: string;
+  reason: string;
+  recipient: number;
+  status: string;
+  transfer_code: string;
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface InitiateTransferResponse
+  extends PaystackResponse<InitiateTransferData> {}
 
 export interface InitializePaymentData {
   authorization_url: string;

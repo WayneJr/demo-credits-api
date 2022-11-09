@@ -18,3 +18,17 @@ export class DepositFundsDto {
   @IsNotEmpty()
   transactionPin: string;
 }
+
+export class WithdrawFundsDto {
+  @IsString()
+  @IsNotEmpty()
+  userId: number;
+
+  @IsString()
+  @IsNotEmpty()
+  amount: number;
+
+  @IsString()
+  @IsNotEmpty()
+  accountId: number;
+}
