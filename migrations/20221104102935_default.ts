@@ -6,10 +6,13 @@ import userSchema from '../src/core/schemas/user.schema';
 export async function up(knex: Knex): Promise<void> {
   return knex.schema
     .createTable('users', userSchema)
-    .createTable('transactions', transactionSchema)
-    .createTable('wallets', walletSchema);
+    .createTable('wallets', walletSchema)
+    .createTable('transactions', transactionSchema);
 }
 
 export async function down(knex: Knex): Promise<void> {
-  return knex.schema.dropTableIfExists('users');
+  return knex.schema
+    .dropTableIfExists('users')
+    .dropTableIfExists('wallets')
+    .dropTableIfExists('transactions');
 }
