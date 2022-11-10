@@ -55,6 +55,8 @@ $ yarn test
 
 ```
 
+## Deployment 
+This app was deployed using [Fly](https://fly.io)
 
 ## Stay in touch
 
