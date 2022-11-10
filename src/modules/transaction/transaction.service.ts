@@ -9,6 +9,8 @@ import {
   PROCESSING,
   PAYSTACK_CURRENCY,
   SUCCESS,
+  DEBIT,
+  WALLET,
 } from '../../core/constants';
 import { WebhookPayload } from '../../core/utils/interfaces/paystack.interface';
 import { Paystack } from '../../core/utils/Paystack';
@@ -16,6 +18,7 @@ import { User } from '../user/interfaces/user.interface';
 import { Wallet } from './interfaces/wallet.interface';
 import { Transaction } from './interfaces/transaction.interface';
 import { Account } from '../account/interfaces/account.interface';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class TransactionService {
@@ -133,6 +136,73 @@ export class TransactionService {
           });
       }
     }
+  }
+
+  async transferToWallet(userId: number, receiverTag: string, amount: number) {
+    const senderWallet = await this.knex<Wallet>('wallets')
+      .where({ user_id: userId })
+      .first();
+
+    if (senderWallet.currentBalance < amount) {
+      throw new ForbiddenException('Insufficient funds');
+    }
+
+    const receiverWallet = await this.knex<Wallet>('wallets')
+      .where({ tag: receiverTag })
+      .first();
+
+    const senderTransaction = await this.knex<Transaction>(
+      'transactions',
+    ).insert({
+      amount: amount,
+      mode: WALLET,
+      type: DEBIT,
+      status: PROCESSING,
+      currency: PAYSTACK_CURRENCY,
+      reference: uuidv4(),
+      userId,
+      wallet_id: senderWallet.id,
+      receiver_wallet: receiverWallet.id,
+    });
+
+    const session = await this.knex.transaction();
+    session<Transaction>('transactions')
+      .where({ id: senderTransaction[0] })
+      .update({ status: SUCCESS })
+      .then(async () => {
+        const transaction = await this.knex<Transaction>('transactions')
+          .select('*')
+          .where({ id: senderTransaction[0] })
+          .first();
+        const wallet = await this.knex<Wallet>('wallets')
+          .select('*')
+          .where({
+            id: transaction.receiver_wallet,
+          })
+          .first();
+
+        await session<Transaction>('transactions').insert({
+          amount: amount,
+          mode: WALLET,
+          type: CREDIT,
+          status: PROCESSING,
+          currency: PAYSTACK_CURRENCY,
+          reference: uuidv4(),
+          userId: receiverWallet.user_id,
+          wallet_id: senderWallet.id,
+          receiver_wallet: receiverWallet.id,
+        });
+
+        await session<Wallet>('wallets')
+          .where('id', wallet.id)
+          .increment('currentBalance', amount);
+        return null;
+      })
+      .then(session.commit)
+      .catch((err) => {
+        console.log(err);
+        return session.rollback;
+      });
   }
 
   async initiateWithdrawal(userId: number, amount: number, accountId: number) {

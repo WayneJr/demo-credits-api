@@ -6,6 +6,7 @@ export interface Transaction {
   status: string;
   mode: string;
   type: string;
+  receiver_wallet: number;
   userId: number;
   wallet_id: number;
   readonly created_at: Date;

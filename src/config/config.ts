@@ -1,4 +1,3 @@
-import { registerAs } from '@nestjs/config';
 import { PROD, TEST } from '../core/constants';
 import development from './env-dev';
 import production from './env-prod';

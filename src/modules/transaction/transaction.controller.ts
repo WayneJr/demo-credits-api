@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Inject,
   Post,
+  Param,
 } from '@nestjs/common';
 import { TRANSACTION_SERVICE } from '../../core/constants';
 import { WebhookPayload } from '../../core/utils/interfaces/paystack.interface';
@@ -39,6 +40,19 @@ export class TransactionController {
       body,
       headers: req.headers,
     });
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('transfer/:userId')
+  async transferToWallet(
+    @Param('userId') userId: number,
+    @Body() body: { amount: number; receiverTag: string },
+  ) {
+    return this.transactionService.transferToWallet(
+      userId,
+      body.receiverTag,
+      body.amount,
+    );
   }
 
   @HttpCode(HttpStatus.OK)
