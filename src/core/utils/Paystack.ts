@@ -1,5 +1,5 @@
 import * as axios from 'axios';
-import { PAYSTACK_CURRENCY } from 'src/core/constants';
+import { PAYSTACK_CURRENCY } from '../../core/constants';
 import {
   PAYSTACK_AUTH,
   PAYSTACK_CONTENT_STRING,

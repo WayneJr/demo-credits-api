@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getConnectionToken } from 'nest-knexjs';
 import { UserService } from './user.service';
 import { InternalServerErrorException } from '@nestjs/common';
+import { FakeKnex } from '../../core/utils/FakeKnex';
 
 describe('UserService', () => {
   let service: UserService;
@@ -12,7 +13,7 @@ describe('UserService', () => {
         UserService,
         {
           provide: getConnectionToken(),
-          useClass: class FakeClass {},
+          useClass: FakeKnex,
         },
       ],
     }).compile();
