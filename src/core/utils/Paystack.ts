@@ -14,6 +14,7 @@ import {
   ResolveAccountResponse,
 } from './interfaces/paystack.interface';
 import { v4 as uuidv4 } from 'uuid';
+import { InitiateTransferResponse } from './interfaces/paystack.interface';
 
 /**
  * @class Paystack
@@ -93,7 +94,7 @@ export class Paystack {
   static async initiateTransfer({
     amount,
     recipient,
-  }): Promise<InitializePaymentResponse> {
+  }): Promise<InitiateTransferResponse> {
     const url = `/transfer`;
 
     const ref = uuidv4();
