@@ -18,6 +18,8 @@
 
 ## Installation
 
+Please ensure to add this `https://your-hostname/api/v1/transactions/verify/deposit` url in the **WEBHOOK URL** field os your paystack dashboard to enable automation of the process.
+
 ```bash
 $ yarn install
 ```
