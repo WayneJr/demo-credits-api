@@ -24,6 +24,10 @@ $ yarn install
 
 ## Running the app
 
+Please fill in your mysql database configuration details in a `dev.env`  file and place it in the `src/config/env` directory of the project. This will be for your development use. For production, please name the file `prod.env`.
+
+**NOTE**: There is a sample of what your `.env` file should look like in the `.env.example` file.
+
 ```bash
 # development
 $ yarn start
