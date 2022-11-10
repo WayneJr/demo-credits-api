@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Knex } from 'knex';
 import { InjectConnection } from 'nest-knexjs';
-import { USERID, WALLETID } from 'src/core/constants';
+import { USERID, WALLETID } from '../../core/constants';
 import { Paystack } from '../../core/utils/Paystack';
 import { Wallet } from '../transaction/interfaces/wallet.interface';
 import { User } from '../user/interfaces/user.interface';
