@@ -181,18 +181,6 @@ export class TransactionService {
           })
           .first();
 
-        await session<Transaction>('transactions').insert({
-          amount: amount,
-          mode: WALLET,
-          type: CREDIT,
-          status: PROCESSING,
-          currency: PAYSTACK_CURRENCY,
-          reference: uuidv4(),
-          user_id: receiverWallet.user_id,
-          wallet_id: senderWallet.id,
-          receiver_wallet: receiverWallet.id,
-        });
-
         await session<Wallet>('wallets')
           .where('id', wallet.id)
           .increment('currentBalance', amount);
@@ -200,6 +188,18 @@ export class TransactionService {
         await session<Wallet>('wallets')
           .where('id', transaction.wallet_id)
           .decrement('currentBalance', amount);
+
+        await session<Transaction>('transactions').insert({
+          amount: amount,
+          mode: WALLET,
+          type: CREDIT,
+          status: SUCCESS,
+          currency: PAYSTACK_CURRENCY,
+          reference: uuidv4(),
+          user_id: receiverWallet.user_id,
+          wallet_id: senderWallet.id,
+          receiver_wallet: receiverWallet.id,
+        });
         return null;
       })
       .then(session.commit)
