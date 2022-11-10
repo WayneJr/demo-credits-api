@@ -52,16 +52,16 @@ export class Paystack {
 
   /**
    * Resolve account number
-   * @param accountNumber
-   * @param bankCode
+   * @param account_number
+   * @param bank_code
    * @returns
    */
 
-  static async resolveAccountNumber(
-    accountNumber: string,
-    bankCode: string,
+  static async resolveaccount_number(
+    account_number: string,
+    bank_code: string,
   ): Promise<ResolveAccountResponse> {
-    const url = `${PAYSTACK_RESOLVE_ACCOUNT}?account_number=${accountNumber}&bank_code=${bankCode}`;
+    const url = `${PAYSTACK_RESOLVE_ACCOUNT}?account_number=${account_number}&bank_code=${bank_code}`;
 
     const response = await this.axiosInstance.get(url);
     return response.data;
@@ -75,15 +75,15 @@ export class Paystack {
 
   static async createRecipient({
     name,
-    accountNumber,
-    bankCode,
+    account_number,
+    bank_code,
   }): Promise<CreateRecipientResponse> {
     const url = `/transferrecipient`;
     const data = {
       type: 'nuban',
       name: name,
-      account_number: accountNumber,
-      bank_code: bankCode,
+      account_number: account_number,
+      bank_code: bank_code,
       currency: PAYSTACK_CURRENCY,
     };
     const response = await this.axiosInstance.post(url, data);

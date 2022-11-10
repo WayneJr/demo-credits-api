@@ -31,7 +31,7 @@ const PAYSTACK = 'paystack';
 
 // Get Accounts ID types
 const USERID = 'userId';
-const WALLETID = 'walletId';
+const WALLETID = 'wallet_id';
 
 // Transaction Status
 const PENDING = 'pending';

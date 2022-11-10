@@ -20,26 +20,26 @@ export class AccountService {
   }
 
   async addAccountToWallet(
-    accountNumber: string,
-    bankCode: string,
+    account_number: string,
+    bank_code: string,
     userId: number,
   ) {
     const user = await this.knex<User>('users').where({ id: userId }).first();
     const wallet = await this.knex<Wallet>('wallets')
-      .where({ userId: userId })
+      .where({ user_id: userId })
       .first();
-    const response = await Paystack.resolveAccountNumber(
-      accountNumber,
-      bankCode,
+    const response = await Paystack.resolveaccount_number(
+      account_number,
+      bank_code,
     );
 
     if (response.status) {
       await this.knex<Account>('accounts').insert({
-        accountName: response.data.account_name,
-        accountNumber: accountNumber,
-        bankCode: bankCode,
-        userId: user.id,
-        walletId: wallet.id,
+        account_name: response.data.account_name,
+        account_number: account_number,
+        bank_code: bank_code,
+        user_id: user.id,
+        wallet_id: wallet.id,
       });
     }
 
@@ -49,9 +49,9 @@ export class AccountService {
   async getAccounts(id: number, idType: string) {
     switch (idType) {
       case USERID:
-        return await this.knex<Account>('accounts').where({ userId: id });
+        return await this.knex<Account>('accounts').where({ user_id: id });
       case WALLETID:
-        return await this.knex<Account>('accounts').where({ walletId: id });
+        return await this.knex<Account>('accounts').where({ wallet_id: id });
       default:
         return null;
     }

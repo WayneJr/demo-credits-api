@@ -54,7 +54,7 @@ export class TransactionService {
       currency: PAYSTACK_CURRENCY,
       reference: response.data.reference,
       userId: user.id,
-      walletId: wallet.id,
+      wallet_id: wallet.id,
     });
 
     return {
@@ -91,7 +91,7 @@ export class TransactionService {
             const wallet = await this.knex<Wallet>('wallets')
               .select('*')
               .where({
-                id: transaction.walletId,
+                id: transaction.wallet_id,
               })
               .first();
             await session<Wallet>('wallets')
@@ -118,7 +118,7 @@ export class TransactionService {
             const wallet = await this.knex<Wallet>('wallets')
               .select('*')
               .where({
-                id: transaction.walletId,
+                id: transaction.wallet_id,
               })
               .first();
             await session<Wallet>('wallets')
@@ -138,7 +138,7 @@ export class TransactionService {
   async initiateWithdrawal(userId: number, amount: number, accountId: number) {
     const user = await this.knex<User>('users').where({ id: userId }).first();
     const wallet = await this.knex<Wallet>('wallets')
-      .where({ userId: user.id })
+      .where({ user_id: user.id })
       .first();
 
     let account = await this.knex<Account>('accounts')
@@ -149,14 +149,14 @@ export class TransactionService {
       throw new ForbiddenException('Insufficient funds');
     }
 
-    if (!account.recipientCode) {
+    if (!account.recipient_code) {
       const newRecipient = await Paystack.createRecipient({
-        name: account.accountName,
-        accountNumber: account.accountNumber,
-        bankCode: account.bankCode,
+        name: account.account_name,
+        account_number: account.account_number,
+        bank_code: account.bank_code,
       });
       await this.knex<Account>('accounts').where({ id: accountId }).update({
-        recipientCode: newRecipient.data.recipient_code,
+        recipient_code: newRecipient.data.recipient_code,
       });
 
       account = await this.knex<Account>('accounts')
@@ -167,7 +167,7 @@ export class TransactionService {
 
     const transfer = Paystack.initiateTransfer({
       amount,
-      recipient: account.recipientCode,
+      recipient: account.recipient_code,
     });
 
     return transfer;

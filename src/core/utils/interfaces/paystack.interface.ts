@@ -36,15 +36,6 @@ export interface TransferRecipientData {
 export interface CreateRecipientResponse
   extends PaystackResponse<TransferRecipientData> {}
 
-export interface InitializePaymentPayload {
-  amount: number;
-  email: string;
-  userId: string;
-  reference: string;
-  initialCharge?: boolean;
-  meta?: Record<string, any>;
-}
-
 export interface ResolveAccountData {
   account_number: string;
   account_name: string;

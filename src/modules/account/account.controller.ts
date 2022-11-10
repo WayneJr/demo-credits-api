@@ -28,8 +28,8 @@ export class AccountController {
   @Post('add')
   async addAccount(@Body() body: AddAccountDto) {
     return this.accountService.addAccountToWallet(
-      body.accountNumber,
-      body.bankCode,
+      body.account_number,
+      body.bank_code,
       body.userId,
     );
   }

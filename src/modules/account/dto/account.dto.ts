@@ -3,11 +3,11 @@ import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 export class AddAccountDto {
   @IsString()
   @IsNotEmpty()
-  accountNumber: string;
+  account_number: string;
 
   @IsString()
   @IsNotEmpty()
-  bankCode: string;
+  bank_code: string;
 
   @IsNumber()
   @IsNotEmpty()

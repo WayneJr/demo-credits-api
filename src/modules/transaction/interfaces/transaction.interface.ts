@@ -7,7 +7,7 @@ export interface Transaction {
   mode: string;
   type: string;
   userId: number;
-  walletId: number;
-  readonly createdAt: Date;
-  readonly updatedAt: Date;
+  wallet_id: number;
+  readonly created_at: Date;
+  readonly updated_at: Date;
 }
