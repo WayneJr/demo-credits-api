@@ -6,7 +6,7 @@ const walletSchema = (table: Knex.CreateTableBuilder) => {
   table.float('currentBalance').notNullable().defaultTo(0);
   table.integer('user_id').unsigned().notNullable();
   table.foreign('user_id').references('id').inTable('users');
-  table.timestamps(true, true);
+  table.timestamps(true);
 };
 
 export default walletSchema;

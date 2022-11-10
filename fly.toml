@@ -7,10 +7,10 @@ processes = []
 
 [env]
   NODE_ENV="prod"
-  DB_HOST="sql.freedb.tech"
-  DB_USER="freedb_democredits"
-  DB_PASSWORD="?y$78Jm?TcJB9zY"
-  DB_NAME="freedb_democredits"
+  DB_HOST="sql8.freesqldatabase.com"
+  DB_USER="sql8558598"
+  DB_PASSWORD="Z7W9fqXext"
+  DB_NAME="sql8558598"
 
 [experimental]
   allowed_public_ports = []

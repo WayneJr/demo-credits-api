@@ -25,7 +25,7 @@ const transactionSchema = (table: Knex.CreateTableBuilder) => {
   table.foreign('user_id').references('id').inTable('users');
   table.foreign('receiver_wallet').references('id').inTable('wallets');
   table.foreign('wallet_id').references('id').inTable('wallets');
-  table.timestamps(true, true);
+  table.timestamps(true);
 };
 
 export default transactionSchema;

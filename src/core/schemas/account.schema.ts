@@ -10,7 +10,7 @@ const accountSchema = (table: Knex.CreateTableBuilder) => {
   table.integer('user_id').unsigned().notNullable();
   table.foreign('wallet_id').references('id').inTable('wallets');
   table.foreign('user_id').references('id').inTable('users');
-  table.timestamps(true, true);
+  table.timestamps(true);
 };
 
 export default accountSchema;

@@ -8,7 +8,7 @@ const userSchema = (table: Knex.CreateTableBuilder) => {
   table.string('transactionPin', 4).notNullable();
   table.string('email').notNullable().unique();
   table.string('password').notNullable();
-  table.timestamps(true, true);
+  table.timestamps(true);
 };
 
 export default userSchema;
