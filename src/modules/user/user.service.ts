@@ -16,34 +16,26 @@ export class UserService {
   }
 
   async create(user: CreateUserDto) {
-    let response: {
-      id: number;
-      walletId: number;
-    } = null;
     const session = await this.knex.transaction();
 
     session('users')
       .insert(user)
-      .then((id) => {
+      .then((ids) => {
         return session('wallets')
           .insert({
-            userId: id[0],
+            user_id: ids[0],
             tag: user.tag,
           })
-          .then((walletId) => {
-            response = {
-              id: id[0],
-              walletId: walletId[0],
-            };
+          .then(() => {
             return null;
           });
       })
       .then(session.commit)
       .catch(session.rollback);
 
-    // const newUser = await this.knex<User>('users').insert(user);
-
     // const wallet = await this.knex('wallets').insert({});
-    return response;
+    return {
+      message: 'User created successfully',
+    };
   }
 }
