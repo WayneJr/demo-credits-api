@@ -38,7 +38,7 @@ export class TransactionService {
   }) {
     const user = await this.knex<User>('users').where({ email }).first();
     const wallet = await this.knex('wallets')
-      .where({ userId: user.id })
+      .where({ user_id: user.id })
       .first();
 
     if (user.transactionPin !== transactionPin) {
@@ -56,7 +56,7 @@ export class TransactionService {
       status: PROCESSING,
       currency: PAYSTACK_CURRENCY,
       reference: response.data.reference,
-      userId: user.id,
+      user_id: user.id,
       wallet_id: wallet.id,
     });
 
@@ -160,7 +160,7 @@ export class TransactionService {
       status: PROCESSING,
       currency: PAYSTACK_CURRENCY,
       reference: uuidv4(),
-      userId,
+      user_id: userId,
       wallet_id: senderWallet.id,
       receiver_wallet: receiverWallet.id,
     });
@@ -188,7 +188,7 @@ export class TransactionService {
           status: PROCESSING,
           currency: PAYSTACK_CURRENCY,
           reference: uuidv4(),
-          userId: receiverWallet.user_id,
+          user_id: receiverWallet.user_id,
           wallet_id: senderWallet.id,
           receiver_wallet: receiverWallet.id,
         });
@@ -196,6 +196,10 @@ export class TransactionService {
         await session<Wallet>('wallets')
           .where('id', wallet.id)
           .increment('currentBalance', amount);
+
+        await session<Wallet>('wallets')
+          .where('id', transaction.wallet_id)
+          .decrement('currentBalance', amount);
         return null;
       })
       .then(session.commit)
@@ -203,6 +207,10 @@ export class TransactionService {
         console.log(err);
         return session.rollback;
       });
+
+    return {
+      message: 'Transfer Completed successfulyy',
+    };
   }
 
   async initiateWithdrawal(userId: number, amount: number, accountId: number) {
@@ -232,7 +240,6 @@ export class TransactionService {
       account = await this.knex<Account>('accounts')
         .where({ id: accountId })
         .first();
-      console.log(account);
     }
 
     const transfer = Paystack.initiateTransfer({
