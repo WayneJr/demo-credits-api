@@ -99,6 +99,48 @@ describe('AccountService', () => {
     });
   });
 
+  describe('test get wallet', () => {
+    it('should get a wallet', async () => {
+      const spy = jest
+        .spyOn(service, 'getWallet')
+        .mockImplementationOnce(async () => {
+          return {
+            id: 1,
+            user_id: 1,
+            balance: 0,
+            created_at: '2021-01-01',
+            updated_at: '2021-01-01',
+          };
+        });
+
+      const response = await service.getWallet(1, USERID);
+
+      expect(spy).toHaveBeenCalled();
+      expect(response).toStrictEqual({
+        id: 1,
+        user_id: 1,
+        balance: 0,
+        created_at: '2021-01-01',
+        updated_at: '2021-01-01',
+      });
+    });
+
+    it('should throw a internal server exception error', async () => {
+      const spy = jest
+        .spyOn(service, 'getWallet')
+        .mockImplementationOnce(async () => {
+          throw new InternalServerErrorException('Internal Server Error');
+        });
+
+      try {
+        await service.getWallet(null, null);
+        expect(spy).toHaveBeenCalled();
+      } catch (error) {
+        expect(error).toBeInstanceOf(InternalServerErrorException);
+      }
+    });
+  });
+
   describe('test get accounts', () => {
     it('should return a list of accounts', async () => {
       const spy = jest

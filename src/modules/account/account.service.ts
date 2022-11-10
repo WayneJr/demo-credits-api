@@ -46,6 +46,22 @@ export class AccountService {
     return response;
   }
 
+  async getWallet(id: number, idType: string) {
+    let wallets = [];
+    switch (idType) {
+      case USERID:
+        wallets = await this.knex<Wallet>('wallets').where({
+          user_id: id,
+        });
+
+        return wallets[0];
+      case WALLETID:
+        wallets = await this.knex<Wallet>('wallets').where({ id: id });
+      default:
+        return null;
+    }
+  }
+
   async getAccounts(id: number, idType: string) {
     switch (idType) {
       case USERID:

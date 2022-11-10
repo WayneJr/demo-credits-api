@@ -35,6 +35,12 @@ export class AccountController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @Get('wallet/:userId')
+  async getWallet(@Param('userId') userId: number) {
+    return this.accountService.getWallet(userId, USERID);
+  }
+
+  @HttpCode(HttpStatus.OK)
   @Get(':userId')
   async getAccountsByUserId(@Param('userId') userId: number) {
     return this.accountService.getAccounts(userId, USERID);
