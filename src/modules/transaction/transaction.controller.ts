@@ -10,7 +10,11 @@ import {
 } from '@nestjs/common';
 import { TRANSACTION_SERVICE } from '../../core/constants';
 import { WebhookPayload } from '../../core/utils/interfaces/paystack.interface';
-import { DepositFundsDto, WithdrawFundsDto } from './dto/transaction.dto';
+import {
+  DepositFundsDto,
+  TransferToWalletDto,
+  WithdrawFundsDto,
+} from './dto/transaction.dto';
 import { TransactionService } from './transaction.service';
 
 @Controller('transactions')
@@ -46,12 +50,13 @@ export class TransactionController {
   @Post('transfer/:userId')
   async transferToWallet(
     @Param('userId') userId: number,
-    @Body() body: { amount: number; receiverTag: string },
+    @Body() body: TransferToWalletDto,
   ) {
     return this.transactionService.transferToWallet(
       userId,
       body.receiverTag,
       body.amount,
+      body.transactionPin,
     );
   }
 
@@ -62,6 +67,7 @@ export class TransactionController {
       body.userId,
       body.amount,
       body.accountId,
+      body.transactionPin,
     );
   }
 }

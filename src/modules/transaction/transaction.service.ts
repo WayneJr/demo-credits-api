@@ -138,7 +138,17 @@ export class TransactionService {
     }
   }
 
-  async transferToWallet(userId: number, receiverTag: string, amount: number) {
+  async transferToWallet(
+    userId: number,
+    receiverTag: string,
+    amount: number,
+    transactionPin: string,
+  ) {
+    const user = await this.knex<User>('users').where({ id: userId }).first();
+
+    if (user.transactionPin !== transactionPin) {
+      throw new ForbiddenException('Invalid transaction pin');
+    }
     const senderWallet = await this.knex<Wallet>('wallets')
       .where({ user_id: userId })
       .first();
@@ -213,8 +223,18 @@ export class TransactionService {
     };
   }
 
-  async initiateWithdrawal(userId: number, amount: number, accountId: number) {
+  async initiateWithdrawal(
+    userId: number,
+    amount: number,
+    accountId: number,
+    transactionPin: string,
+  ) {
     const user = await this.knex<User>('users').where({ id: userId }).first();
+
+    if (user.transactionPin !== transactionPin) {
+      throw new ForbiddenException('Invalid transaction pin');
+    }
+
     const wallet = await this.knex<Wallet>('wallets')
       .where({ user_id: user.id })
       .first();

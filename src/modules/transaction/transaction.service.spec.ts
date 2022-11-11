@@ -134,7 +134,12 @@ describe('TransactionService', () => {
             message: 'Transfer Completed successfulyy',
           };
         });
-      const response = await service.transferToWallet(1, test.tag, 3000);
+      const response = await service.transferToWallet(
+        1,
+        test.tag,
+        3000,
+        test.transactionPin,
+      );
 
       expect(spy).toHaveBeenCalled();
       expect(response).toStrictEqual({
@@ -154,7 +159,7 @@ describe('TransactionService', () => {
         });
 
       try {
-        await service.transferToWallet(1, 'davey', 500000);
+        await service.transferToWallet(1, 'davey', 500000, test.transactionPin);
         expect(spy).toHaveBeenCalled();
       } catch (error) {
         expect(error).toBeInstanceOf(ForbiddenException);
@@ -169,7 +174,7 @@ describe('TransactionService', () => {
         });
 
       try {
-        await service.transferToWallet(null, null, null);
+        await service.transferToWallet(null, null, null, null);
         expect(spy).toHaveBeenCalled();
       } catch (error) {
         expect(error).toBeInstanceOf(InternalServerErrorException);
@@ -202,7 +207,12 @@ describe('TransactionService', () => {
             },
           };
         });
-      const response = await service.initiateWithdrawal(1, 3000, 1);
+      const response = await service.initiateWithdrawal(
+        1,
+        3000,
+        1,
+        test.transactionPin,
+      );
 
       expect(spy).toHaveBeenCalled();
       expect(response).toStrictEqual({
@@ -254,7 +264,7 @@ describe('TransactionService', () => {
         });
 
       try {
-        await service.initiateWithdrawal(1, 500000, 1);
+        await service.initiateWithdrawal(1, 500000, 1, test.transactionPin);
         expect(spy).toHaveBeenCalled();
       } catch (error) {
         expect(error).toBeInstanceOf(ForbiddenException);
@@ -269,7 +279,7 @@ describe('TransactionService', () => {
         });
 
       try {
-        await service.initiateWithdrawal(null, null, null);
+        await service.initiateWithdrawal(null, null, null, null);
         expect(spy).toHaveBeenCalled();
       } catch (error) {
         expect(error).toBeInstanceOf(InternalServerErrorException);

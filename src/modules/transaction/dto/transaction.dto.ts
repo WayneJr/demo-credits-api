@@ -31,4 +31,22 @@ export class WithdrawFundsDto {
   @IsString()
   @IsNotEmpty()
   accountId: number;
+
+  @IsNumberString()
+  @IsNotEmpty()
+  transactionPin: string;
+}
+
+export class TransferToWalletDto {
+  @IsString()
+  @IsNotEmpty()
+  receiverTag: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  amount: number;
+
+  @IsNumberString()
+  @IsNotEmpty()
+  transactionPin: string;
 }
